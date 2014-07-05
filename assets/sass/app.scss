@@ -1,5 +1,13 @@
 @import "normalize.3.0.1.css";
 
+// need to add clearfix
+* {
+	-moz-box-sizing: border-box; 
+	-webkit-box-sizing: border-box; 
+	box-sizing: border-box;
+}
+
+$primary-color: #DF7A1E;
 $layout-width: 1160px;
 
 body {
@@ -14,10 +22,57 @@ a, a:visited {
 	}
 }
 #page {
-	box-shadow: 0px 0px 24px #D1D1D1;
 	padding: 1em;
+}
+#primary {
+	width: 60%;
+	float: left;
+}
+#secondary {
+	width: 25%;
+	float: left;
+}
+#links {
+	a {
+		display: block;
+		padding: 3px;
+	}
 }
 .wrap {
 	max-width: $layout-width;
 	margin: 0 auto;
+}
+.alignleft {
+	float: left;
+}
+#chatroom {
+	background-color: #000;
+	color: #FFA859;
+	padding: 3px;
+	position: relative;
+	line-height: 1;
+	height: 200px;
+
+	ul {
+		padding: 0;
+		margin: 0;
+		list-style: none;
+	}
+	.controls {
+		position: absolute;
+		bottom: 3px;
+		width: 100%;
+		padding: 3px;
+	}
+	input,button {
+		outline: 0;
+		border: 0;
+		background: transparent;
+
+	}
+	#m {
+		width: 90%;
+		border-bottom: 1px solid $primary-color;
+	}
+
 }

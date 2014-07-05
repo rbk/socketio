@@ -1,4 +1,9 @@
 @import url(normalize.3.0.1.css);
+* {
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box; }
+
 body {
   font-size: 12px; }
 
@@ -8,9 +13,47 @@ a, a:visited {
     color: #FFA859; }
 
 #page {
-  box-shadow: 0px 0px 24px #D1D1D1;
   padding: 1em; }
+
+#primary {
+  width: 60%;
+  float: left; }
+
+#secondary {
+  width: 25%;
+  float: left; }
+
+#links a {
+  display: block;
+  padding: 3px; }
 
 .wrap {
   max-width: 1160px;
   margin: 0 auto; }
+
+.alignleft {
+  float: left; }
+
+#chatroom {
+  background-color: #000;
+  color: #FFA859;
+  padding: 3px;
+  position: relative;
+  line-height: 1;
+  height: 200px; }
+  #chatroom ul {
+    padding: 0;
+    margin: 0;
+    list-style: none; }
+  #chatroom .controls {
+    position: absolute;
+    bottom: 3px;
+    width: 100%;
+    padding: 3px; }
+  #chatroom input, #chatroom button {
+    outline: 0;
+    border: 0;
+    background: transparent; }
+  #chatroom #m {
+    width: 90%;
+    border-bottom: 1px solid #df7a1e; }

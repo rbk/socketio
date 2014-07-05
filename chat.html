@@ -19,10 +19,29 @@
         </nav>
       </div>
       <div id="primary">
-        <h1>Welcome!</h1>
-        <p>This site is testing site I am building. Have a look around if you want! There is not much here yet.</p>
-        <img class="alignleft" width="150" src="https://avatars1.githubusercontent.com/u/3095540?s=460">
+        <h1>Socket.io Chat</h1>
+        <div id="chatroom">
+          <ul id="messages"></ul>
+          <div class="controls">
+          <form action="">
+            <input id="m" autocomplete="off" autofocus /><button>Send</button>
+          </form>
+          </div>
+        </div> 
       </div>
+
     </div> <!-- end #page -->
+
+    <script>
+      var socket = io();
+      $('form').submit(function(){
+        socket.emit('chat message', $('#m').val());
+        $('#m').val('');
+        return false;
+      });
+      socket.on('chat message', function(msg){
+        $('#messages').append($('<li>').text(msg));
+      });
+    </script>
   </body>
 </html>

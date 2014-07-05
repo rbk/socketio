@@ -6,6 +6,7 @@ var io = require('socket.io')(http);
 
 // Static routes
 app.get('/', function(req, res){ res.sendfile('index.html'); });
+app.get('/chat', function(req, res){ res.sendfile('chat.html'); });
 app.get('/rproxy', function(req, res){ res.sendfile('how-to-setup-a-reverse-proxy-nginx.html'); });
 app.get('/template', function(req, res){ res.sendfile('template.html'); });
 
