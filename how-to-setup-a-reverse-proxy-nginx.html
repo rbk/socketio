@@ -1,0 +1,74 @@
+<!DOCtype html>
+<html>
+<head>
+    <title>How to Setup a reverse proxy with Nginx</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="How to setup a reverse proxy to run nodejs applications">
+
+</head>
+<body>
+<h1>Deploy Node.js Application - Nginx + Forever</h1>
+
+<article>
+    <p>This guide is to help you get a node.js application up and running quickly. Hopefully everything works out!</p>
+</article>
+
+<article>
+    <header>
+        <h1>System</h1>
+    </header>
+    <p>This guide assumes you have root access to a Digital ocean droplet, you have a domain name, and the DNS for the domain is pointed to digital ocean.</p>
+    <div>
+        <ul>
+            <li>Ubuntu 14 ( $5 droplet )</li>
+            <li>Nginx - <code>sudo apt-get install nginx</code></li>
+            <li>Node.js - <code>sudo apt-get install nodejs</code> You can install via package manager or make yourself.</li>
+        </ul>
+    </div>
+</article>
+<article>
+    <header>
+        <h1>Guide</h1>
+    </header>
+    <div>
+
+        <ol>
+        <li>Install everything you need!
+            <ul>
+                <li>Nginx</li>
+                <li>Node.js</li>
+                <li>Forever <code>npm install forever -g</code></li>
+            </ul>
+            <br>
+        </li>
+        <li>Create a conf file for your domain:
+            <p>nano /etc/nginx/conf.d/richardkeller.net.conf</p>
+        </li>
+        <li>Add this to the conf file:
+            <p>Obviously replace the values like your port number and domain name.</p>
+            <pre>
+            server {
+                listen 80;
+
+                server_name richardkeller.net;
+
+                location / {
+                    proxy_pass http://localhost:3000;
+                    proxy_http_version 1.1;
+                    proxy_set_header Upgrade $http_upgrade;
+                    proxy_set_header Connection 'upgrade';
+                    proxy_set_header Host $host;
+                    proxy_cache_bypass $http_upgrade;
+                }
+            }
+            </pre>
+
+        </li>
+        <li>Restart the nginx server: <code>sudo service nginx restart</code></li>
+        <li>Now we need to use forever to start the app.</li>
+        </ol>
+    </div>
+</article>
+
+</body>
+</html>
