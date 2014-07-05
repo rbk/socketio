@@ -10,7 +10,14 @@
 <h1>Deploy Node.js Application - Nginx + Forever</h1>
 
 <article>
+
+    <p><strong>This article may be incomplete!</strong></p>
+
+
+
     <p>This guide is to help you get a node.js application up and running quickly. Hopefully everything works out!</p>
+    <p>This is the guide I used. <a href="https://www.digitalocean.com/community/tutorials/how-to-host-multiple-node-js-applications-on-a-single-vps-with-nginx-forever-and-crontab">https://www.digitalocean.com/community/tutorials/how-to-host-multiple-node-js-applications-on-a-single-vps-with-nginx-forever-and-crontab</a> It took me awhile to find this guide so I decided to save some of the stuff here. </p>
+    <p>If you found this you may be better off following the original guide. This is more of a reference for me.</p>
 </article>
 
 <article>
@@ -65,7 +72,32 @@
 
         </li>
         <li>Restart the nginx server: <code>sudo service nginx restart</code></li>
-        <li>Now we need to use forever to start the app.</li>
+        <li>Now we need to use forever to start the app.
+            <p>GET THE CODE HERE: <a href="https://github.com/guille/chat-example">https://github.com/guille/chat-example</a></p>
+            <p>You'll need to use NPM to install the necessary nodejs modules. <code>npm install</code>, will install all dependencies from package.json</p>
+
+            <p>Here is the most basic server script I have ever seen:</p>
+            <pre>
+                var app = require('express')();
+                var http = require('http').Server(app);
+                var io = require('socket.io')(http);
+
+
+                // Static routes
+                app.get('/', function(req, res){ res.sendfile('index.html'); });
+
+                io.on('connection', function(socket){
+                  socket.on('chat message', function(msg){
+                    io.emit('chat message', msg);
+                  });
+                });
+
+                http.listen(3000, function(){
+                  console.log('listening on *:3000');
+                });
+            </pre>
+
+        </li>
         </ol>
     </div>
 </article>

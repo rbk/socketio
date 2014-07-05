@@ -2,23 +2,26 @@
 <html>
   <head>
     <title>Richardkeller.net</title>
-    <style>
-      * { margin: 0; padding: 0; box-sizing: border-box; }
-      body { font: 13px Helvetica, Arial; }
-    </style>
-  </head>
-  <body>
-    <nav class="links">
-      <a href="/rproxy">Setup reverse proxy with Nginx</a>
-      <a href="/template">Template</a>
-    </nav>
-    <ul id="messages"></ul>
-    <form action="">
-      <input id="m" autocomplete="off" /><button>Send</button>
-    </form>
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Basic html template">
+    <link rel="stylesheet" type="text/css" href="css/app.css">
     <script src="/socket.io/socket.io.js"></script>
     <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+  </head>
+  <body>
+    <div id="page" class="wrap">
+      <nav class="links">
+        <a href="/rproxy">Setup reverse proxy with Nginx</a>
+        <a href="/template">Template</a>
+      </nav>
+
+
+      <ol id="messages"></ol>
+      <form action="">
+        <input id="m" autocomplete="off" /><button>Send</button>
+      </form>
+    </div>
+
 
     <script>
       var socket = io();

@@ -1,0 +1,16 @@
+@import url(normalize.3.0.1.css);
+body {
+  font-size: 12px; }
+
+a, a:visited {
+  color: #DF7A1E; }
+  a:hover, a:active, a:visited:hover, a:visited:active {
+    color: #FFA859; }
+
+#page {
+  box-shadow: 0px 0px 24px #D1D1D1;
+  padding: 1em; }
+
+.wrap {
+  max-width: 1160px;
+  margin: 0 auto; }

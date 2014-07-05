@@ -1,0 +1,23 @@
+@import "normalize.3.0.1.css";
+
+$layout-width: 1160px;
+
+body {
+	font-size: 12px;
+}
+a, a:visited {
+	color: #DF7A1E;
+	
+	&:hover,
+	&:active {
+		color: #FFA859;
+	}
+}
+#page {
+	box-shadow: 0px 0px 24px #D1D1D1;
+	padding: 1em;
+}
+.wrap {
+	max-width: $layout-width;
+	margin: 0 auto;
+}
