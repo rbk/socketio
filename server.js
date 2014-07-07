@@ -2,7 +2,16 @@ var express = require('express');
 var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
+var mongoose = require('mongoose');
 
+mongoose.connect('mongodb://localhost/my_database');
+
+var db = mongoose.connection;
+	db.on('error', console.error.bind(console, 'connection error:'));
+	db.once('open', function callback () {
+	  // yay!
+	  console.log('woot woot!');
+});
 
 // Static routes
 app.get('/', function(req, res){ res.sendfile('index.html'); });
@@ -19,6 +28,6 @@ io.on('connection', function(socket){
   });
 });
 
-http.listen(3000, function(){
-  console.log('listening on *:3000');
+http.listen(3001, function(){
+  console.log('listening on *:3001');
 });
