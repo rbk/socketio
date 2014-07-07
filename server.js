@@ -17,7 +17,9 @@ io.on('connection', function(socket){
   socket.on('chat message', function(msg){
     io.emit('chat message', msg);
   });
+  socket.emit('connected', { hello: 'world' });
 });
+
 
 http.listen(3000, function(){
   console.log('listening on *:3000');
