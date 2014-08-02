@@ -15,7 +15,7 @@ mongoose.connect('mongodb://localhost/socketio');
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function callback () {
-    console.log('Connected to MongoDB');
+    console.log('Connected to MongoDB!!!');
 });
 
 // DEFINE collections
@@ -23,10 +23,7 @@ var Chat = mongoose.model( 'Chat', {
     name: String,
     message: String
 });
-// ...
-// DEFINE params to save
-// ...
-
+var Whatever = mongoose.model( 'Whatever', {});
 
 // Static routes
 app.get('/', function(req, res){ res.sendfile('index.html'); });
@@ -39,12 +36,23 @@ app.use(express.static('public'));
 
 // Connection made to socket
 io.on('connection', function(socket){
+
+
     // Get ALL messages
     Chat.find({ },function (err, messages) {
         if (err) return console.error(err);
         // Send all messages to client as object
         socket.emit('connected', messages);
     });
+
+    console.log( 'Connection MADE!!!!!!!!!!!!>>>>>>>>>>>' )
+    var new_connection = new Whatever({ this: 'Zildjian', that: 'blah', other: 'abc123' });
+    new_connection.save(function (err) {
+        if( err ){
+            console.log( err )
+        }
+    });
+
 
     // Someone sends a message
     socket.on('chat message', function(msg){
@@ -61,6 +69,8 @@ io.on('connection', function(socket){
         // Broadcast message
         io.emit('chat message', msg);
     });
+
+
 
 
 }); // end io connect

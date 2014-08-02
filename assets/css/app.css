@@ -27,6 +27,10 @@ nav#primary-nav {
     nav#primary-nav a:hover {
       background-color: #3D1E01; }
 
+@media only screen and (max-width: 768px) {
+  a {
+    display: block;
+    margin-bottom: 3px; } }
 #page {
   padding: 1em; }
 
@@ -74,10 +78,11 @@ ul#messages {
   padding: 1em;
   border-right: 1px solid #000; }
 
-.col-20 {
-  width: 20%;
-  float: left; }
+@media only screen and (min-width: 768px) {
+  .col-20 {
+    width: 20%;
+    float: left; }
 
-.col-80 {
-  width: 80%;
-  float: left; }
+  .col-80 {
+    width: 80%;
+    float: left; } }
