@@ -12,6 +12,8 @@ $layout-width: 1160px;
 
 body {
 	font-size: 12px;
+	// background-color: #B92C2C;
+	// color: #fff;
 }
 a, a:visited {
 	color: #DF7A1E;
@@ -24,18 +26,24 @@ a, a:visited {
 #page {
 	padding: 1em;
 }
-#primary {
-	width: 60%;
-	float: left;
-}
-#secondary {
-	width: 25%;
-	float: left;
+@media only screen and ( min-width: 768px ){
+
+	#primary {
+		width: 60%;
+		float: left;
+	}
+	#secondary {
+		width: 25%;
+		float: left;
+	}
 }
 #links {
+	padding: 1em;
 	a {
 		display: block;
 		padding: 3px;
+		text-decoration: none;
+		margin-bottom: 1px;
 	}
 }
 .wrap {
@@ -52,6 +60,9 @@ a, a:visited {
 	position: relative;
 	line-height: 1;
 	height: 200px;
+	overflow: hidden;
+	overflow-y: scroll;
+	padding-bottom: 30px;
 
 	ul {
 		padding: 0;

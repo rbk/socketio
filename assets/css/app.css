@@ -15,17 +15,21 @@ a, a:visited {
 #page {
   padding: 1em; }
 
-#primary {
-  width: 60%;
-  float: left; }
+@media only screen and (min-width: 768px) {
+  #primary {
+    width: 60%;
+    float: left; }
 
-#secondary {
-  width: 25%;
-  float: left; }
-
-#links a {
-  display: block;
-  padding: 3px; }
+  #secondary {
+    width: 25%;
+    float: left; } }
+#links {
+  padding: 1em; }
+  #links a {
+    display: block;
+    padding: 3px;
+    text-decoration: none;
+    margin-bottom: 1px; }
 
 .wrap {
   max-width: 1160px;
@@ -40,7 +44,9 @@ a, a:visited {
   padding: 3px;
   position: relative;
   line-height: 1;
-  height: 200px; }
+  height: 200px;
+  overflow: hidden;
+  overflow-y: scroll; }
   #chatroom ul {
     padding: 0;
     margin: 0;
