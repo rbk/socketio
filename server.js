@@ -12,6 +12,10 @@ var db = mongoose.connection;
 	  // yay!
 	  console.log('woot woot!');
 });
+// var chatSchema = mongoose.Schema({
+//     name: String,
+//     message: String
+// });
 
 // Static routes
 app.get('/', function(req, res){ res.sendfile('index.html'); });
@@ -24,6 +28,14 @@ app.use(express.static('public'));
 
 io.on('connection', function(socket){
   socket.on('chat message', function(msg){
+
+	// var Chat = mongoose.model('Chat', chatSchema)
+  	// Chat.save({name:"", message: msg});
+  	// var new_message = new Chat({name:"", message: msg});
+  	// if( new_message ){
+  	// 	new_message.save();
+  	// }
+
     io.emit('chat message', msg);
   });
 });
