@@ -1,3 +1,14 @@
+/*
+Todos
+
+Complete CRUD
+User auth
+User list
+Secure api
+
+****/
+
+
 // Project name: SocketIO
 var express      = require('express');
 var app          = express();
