@@ -1,0 +1,89 @@
+@import "normalize.3.0.1.css";
+
+// need to add clearfix
+* {
+	-moz-box-sizing: border-box; 
+	-webkit-box-sizing: border-box; 
+	box-sizing: border-box;
+}
+
+$primary-color: #DF7A1E;
+$layout-width: 1160px;
+
+body {
+	font-size: 12px;
+	// background-color: #B92C2C;
+	// color: #fff;
+}
+a, a:visited {
+	color: #DF7A1E;
+	
+	&:hover,
+	&:active {
+		color: #FFA859;
+	}
+}
+#page {
+	padding: 1em;
+}
+@media only screen and ( min-width: 768px ){
+
+	#primary {
+		width: 60%;
+		float: left;
+	}
+	#secondary {
+		width: 25%;
+		float: left;
+	}
+}
+#links {
+	padding: 1em;
+	a {
+		display: block;
+		padding: 3px;
+		text-decoration: none;
+		margin-bottom: 1px;
+	}
+}
+.wrap {
+	max-width: $layout-width;
+	margin: 0 auto;
+}
+.alignleft {
+	float: left;
+}
+#chatroom {
+	background-color: #000;
+	color: #FFA859;
+	padding: 3px;
+	position: relative;
+	line-height: 1;
+	height: 200px;
+	overflow: hidden;
+	overflow-y: scroll;
+	padding-bottom: 30px;
+
+	ul {
+		padding: 0;
+		margin: 0;
+		list-style: none;
+	}
+	.controls {
+		position: absolute;
+		bottom: 3px;
+		width: 100%;
+		padding: 3px;
+	}
+	input,button {
+		outline: 0;
+		border: 0;
+		background: transparent;
+
+	}
+	#m {
+		width: 90%;
+		border-bottom: 1px solid $primary-color;
+	}
+
+}

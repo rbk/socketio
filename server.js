@@ -1,21 +1,32 @@
+// Project name: SocketIO
 var express = require('express');
 var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var mongoose = require('mongoose');
+var port = process.env.PORT || 3001;
 
-mongoose.connect('mongodb://localhost/my_database');
+// Log HTTP requests
+var logger = require('morgan');
+app.use(logger(':remote-addr :method :url'));
 
+// MongoDB Connection
+mongoose.connect('mongodb://localhost/socketio');
 var db = mongoose.connection;
-	db.on('error', console.error.bind(console, 'connection error:'));
-	db.once('open', function callback () {
-	  // yay!
-	  console.log('woot woot!');
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', function callback () {
+    console.log('Connected to MongoDB');
 });
-// var chatSchema = mongoose.Schema({
-//     name: String,
-//     message: String
-// });
+
+// DEFINE collections
+var Chat = mongoose.model( 'Chat', {
+    name: String,
+    message: String
+});
+// ...
+// DEFINE params to save
+// ...
+
 
 // Static routes
 app.get('/', function(req, res){ res.sendfile('index.html'); });
@@ -26,27 +37,36 @@ app.get('/template', function(req, res){ res.sendfile('template.html'); });
 app.use(express.static('assets'));
 app.use(express.static('public'));
 
+// Connection made to socket
 io.on('connection', function(socket){
-  socket.on('chat message', function(msg){
+    // Get ALL messages
+    Chat.find({ },function (err, messages) {
+        if (err) return console.error(err);
+        // Send all messages to client as object
+        socket.emit('connected', messages);
+    });
 
-	// var Chat = mongoose.model('Chat', chatSchema)
-  	// Chat.save({name:"", message: msg});
-  	// var new_message = new Chat({name:"", message: msg});
-  	// if( new_message ){
-  	// 	new_message.save();
-  	// }
+    // Someone sends a message
+    socket.on('chat message', function(msg){
+        // Save Message to MongoDB
+        // Handle errors ***
+        var message = new Chat({ name: 'Zildjian', message: msg });
+        message.save(function (err) {
+            if( err ){
+                io.emit('chat message', 'Something went wrong while saving your message');
+            } else {
+                console.log( 'Message saved to MongoDB: ' + msg );
+            }
+        });
+        // Broadcast message
+        io.emit('chat message', msg);
+    });
 
-    io.emit('chat message', msg);
-  });
-  socket.emit('connected', { hello: 'world' });
-});
 
-<<<<<<< HEAD
+}); // end io connect
 
-http.listen(3000, function(){
-  console.log('listening on *:3000');
-=======
-http.listen(3001, function(){
-  console.log('listening on *:3001');
->>>>>>> 53ff4a86c16a587b02d494ae03a771b73fe6f162
+
+// Start server
+http.listen(port, function(){
+    console.log('listening on port ' + port);
 });

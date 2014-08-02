@@ -5,61 +5,79 @@
   box-sizing: border-box; }
 
 body {
-  font-size: 12px; }
+  font-size: 16px;
+  font-family: arial, helvetica, sans-serif;
+  background-color: #B92C2C;
+  background-color: #000;
+  color: #fff; }
 
 a, a:visited {
-  color: #DF7A1E; }
+  color: #DF7A1E;
+  text-decoration: none; }
   a:hover, a:active, a:visited:hover, a:visited:active {
     color: #FFA859; }
+
+nav#primary-nav {
+  margin-top: 1em; }
+  nav#primary-nav a {
+    border: 1px solid #df7a1e;
+    padding: 1em;
+    -webkit-transition: all 0.3s ease-out;
+    transition: all 0.3s ease-out; }
+    nav#primary-nav a:hover {
+      background-color: #3D1E01; }
 
 #page {
   padding: 1em; }
 
-@media only screen and (min-width: 768px) {
-  #primary {
-    width: 60%;
-    float: left; }
+input {
+  color: #000;
+  outline: 0;
+  border: 0;
+  padding: 1em;
+  border: 1px solid #df7a1e;
+  background-color: #eee; }
 
-  #secondary {
-    width: 25%;
-    float: left; } }
-#links {
-  padding: 1em; }
-  #links a {
+button, input[type=submit] {
+  background-color: transparent;
+  border: 1px solid #df7a1e;
+  padding: 1em;
+  color: #DF7A1E;
+  outline: 0;
+  -webkit-transition: all 0.3s ease-out;
+  transition: all 0.3s ease-out; }
+  button:hover, input[type=submit]:hover {
+    background-color: #3D1E01;
+    color: #FFA859; }
+
+#message-board {
+  position: relative;
+  background-color: #fff;
+  color: #111;
+  height: 300px;
+  overflow-y: scroll; }
+
+ul#messages {
+  list-style: none;
+  margin: 0;
+  padding: 0; }
+  ul#messages li {
     display: block;
-    padding: 3px;
-    text-decoration: none;
-    margin-bottom: 1px; }
+    padding: 3px 20px;
+    background-color: #fff;
+    border-bottom: 1px solid #eee; }
 
-.wrap {
-  max-width: 1160px;
-  margin: 0 auto; }
+#user-list {
+  background-color: #eee;
+  height: 300px;
+  color: #000;
+  padding: 1em;
+  border-right: 1px solid #000; }
 
-.alignleft {
+.col-20 {
+  width: 20%;
   float: left; }
 
-#chatroom {
-  background-color: #000;
-  color: #FFA859;
-  padding: 3px;
-  position: relative;
-  line-height: 1;
-  height: 200px;
-  overflow: hidden;
-  overflow-y: scroll; }
-  #chatroom ul {
-    padding: 0;
-    margin: 0;
-    list-style: none; }
-  #chatroom .controls {
-    position: absolute;
-    bottom: 3px;
-    width: 100%;
-    padding: 3px; }
-  #chatroom input, #chatroom button {
-    outline: 0;
-    border: 0;
-    background: transparent; }
-  #chatroom #m {
-    width: 90%;
-    border-bottom: 1px solid #df7a1e; }
+.col-80 {
+  width: 80%;
+  float: left; }
