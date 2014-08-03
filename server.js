@@ -5,6 +5,21 @@ Complete CRUD
 User auth
 User list
 Secure api
+Dynamic Collections, for chat embed service type of thing
+Use a css framework to make it look good
+
+build simple authentication
+store user list in chatroom
+remove user when they close window
+make chatrooms embeddable
+
+PONG GAME!!!
+
+Dynamic Pages and posts
+
+Template engine
+
+How to import js files here?!?!?!
 
 ****/
 
@@ -12,12 +27,24 @@ Secure api
 // Project name: SocketIO
 var express      = require('express');
 var app          = express();
+var fs = require('fs');
 var http         = require('http').Server(app);
 var io           = require('socket.io')(http);
 var mongoose     = require('mongoose');
 var cookieParser = require('cookie-parser');
 var port         = process.env.PORT || 3001;
 var router = express.Router();
+
+// Set static file folder
+app.use(express.static('assets'));
+// app.use(express.static('public'));
+
+// Set the template engine
+app.engine('.html', require('ejs').__express);
+app.set('views', __dirname + '/views');
+app.set('view engine', 'html');
+
+// app.engine('html', require('ejs').renderFile);
 
 // Cookie Parser
 app.use(cookieParser('secret-string'));
@@ -41,21 +68,23 @@ db.once('open', function callback () {
 // DEFINE collections
 var Chat = mongoose.model( 'Chat', {
     name: String,
-    message: String
+    message: String,
+    time: Date
 });
 var Session = mongoose.model( 'Session', {
+    type: String,
     name: String,
     ip: String,
+    socket_id: String,
     message_count: Number,
-    time_connected: Number
+    duration: Number
 });
 
 // Static routes
-app.get('/',            function(req, res){ res.sendfile('index.html'); });
-app.get('/chat',        function(req, res){ res.sendfile('chat.html'); });
-app.get('/rproxy',      function(req, res){ res.sendfile('how-to-setup-a-reverse-proxy-nginx.html'); });
-app.get('/template',    function(req, res){ res.sendfile('template.html'); });
-
+app.get('/',            function(req, res){ res.render('index'); });
+app.get('/chat',        function(req, res){ res.render('chat', { title: 'Chat' }); });
+app.get('/rproxy',      function(req, res){ res.render('proxy-nginx'); });
+app.get('/template',    function(req, res){ res.render('template'); });
 
 // API
 app.get('/api/:id?', function(req, res, next) {
@@ -65,12 +94,10 @@ app.get('/api/:id?', function(req, res, next) {
     // next();
 });
 
-app.use(express.static('assets'));
-app.use(express.static('public'));
+
 
 // Connection made to socket
 io.on('connection', function(socket){
-
     //:: On connect
     // 1. ask for nick name
     // 2. create cooke with name
@@ -103,6 +130,7 @@ io.on('connection', function(socket){
 // console.log( socket.handshake.headers.cookie )
 
 
+
     // Someone sends a message
     socket.on('chat message', function(msg){
         // Save Message to MongoDB
@@ -118,16 +146,20 @@ io.on('connection', function(socket){
         // Broadcast message
         io.emit('chat message', msg);
     });
+    socket.on('mouse_position', function(pos){
+        pos.id = socket.id;
+        socket.broadcast.emit('show_mouse', pos)
+    });
 
 
     // On disconnect
     socket.on('disconnect', function( res ){
-        console.log( res )
+        // console.log( socket.id )
+        socket.broadcast.emit('remove_cursor', socket.id );
     });
 
 
 }); // end io connect
-
 
 
 // Start server
