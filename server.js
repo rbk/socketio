@@ -17,8 +17,6 @@ PONG GAME!!!
 
 Dynamic Pages and posts
 
-Template engine
-
 How to import js files here?!?!?!
 
 ****/
@@ -105,6 +103,7 @@ io.on('connection', function(socket){
     // 4. add send name to client
     // 5. add name to user list on client
 
+
     // :: Leave chat
     // 1. remove user from database
     // 2. update user list on clients
@@ -112,11 +111,29 @@ io.on('connection', function(socket){
     //:: Return to chat
     // 1. check for cookie
     // 2.  if cookie send chat room
+    // set a cookie
+    app.use(function (req, res, next) {
+        // check if client sent cookie
+        var cookie = req.cookies.cokkieName;
+        if (cookie === undefined) {
+            // no: set a new cookie
+            var randomNumber=Math.random().toString();
+            randomNumber=randomNumber.substring(2,randomNumber.length);
+            res.cookie('cokkieName',randomNumber, { maxAge: 900000, httpOnly: true });
+            console.log('cookie have created successfully');
+        } else {
+            // yes, cookie was already present 
+            console.log('cookie exists', cookie);
+        } 
+        socket.emit( 'cookie', cookie );
+        next(); // <-- important!
+    });
+
 
     // Get ALL messages
+    // Send all messages to client as object
     Chat.find({ },function (err, messages) {
         if (err) return console.error(err);
-        // Send all messages to client as object
         socket.emit('connected', messages);
     });
 
@@ -127,34 +144,33 @@ io.on('connection', function(socket){
     //     }
     // });
 
-// console.log( socket.handshake.headers.cookie )
 
 
 
     // Someone sends a message
     socket.on('chat message', function(msg){
-        // Save Message to MongoDB
-        // Handle errors ***
         var message = new Chat({ name: 'Zildjian', message: msg });
+        // Save Message to MongoDB
         message.save(function (err) {
+            // Handle errors ***
             if( err ){
                 io.emit('chat message', 'Something went wrong while saving your message');
             } else {
                 console.log( 'Message saved to MongoDB: ' + msg );
+                // Send message to all sockets including yours!
+                io.emit('chat message', msg);
             }
         });
-        // Broadcast message
-        io.emit('chat message', msg);
     });
+
+
+    // Broadcast your mouse position!
     socket.on('mouse_position', function(pos){
         pos.id = socket.id;
         socket.broadcast.emit('show_mouse', pos)
     });
-
-
-    // On disconnect
+    // Remove your mouse icon when you disconnect
     socket.on('disconnect', function( res ){
-        // console.log( socket.id )
         socket.broadcast.emit('remove_cursor', socket.id );
     });
 
