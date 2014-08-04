@@ -31,6 +31,7 @@ var mongoose     = require('mongoose');
 var cookieParser = require('cookie-parser');
 var port         = process.env.PORT || 3001;
 var router = express.Router();
+var sanitizer = require('sanitizer');
 
 // Session stuff
 var session    = require('express-session');
@@ -53,7 +54,6 @@ app.use(cookieParser('secret-string'));
 //    res.end(JSON.stringify(req.cookies));
 // })
 
-
 // Log HTTP requests
 var logger = require('morgan');
 app.use(logger(':remote-addr :method :url'));
@@ -69,6 +69,8 @@ db.once('open', function callback () {
 // MongoDB Session Store
 app.use(session({
     secret: 'secret-cookie-string',
+    name: 'user_session_id',
+    cookie: { path: '/', httpOnly: false, secure: false, maxAge: 1209600 },
     store: new MongoStore({
         db: 'socketio',
         collection: 'sessions',
@@ -82,17 +84,20 @@ app.use(session({
 }));
 
 // DEFINE collections
-var Chat = mongoose.model( 'Chat', {
+var Chat = mongoose.model( 'Message', {
     name: String,
     message: String,
     time: Date
+});
+var User = mongoose.model( 'User', {
+    nickname: String,
+    socket_id: String,
+    message_count: Number
 });
 var Session = mongoose.model( 'Session', {
     type: String,
     name: String,
     ip: String,
-    socket_id: String,
-    message_count: Number,
     duration: Number
 });
 
@@ -146,11 +151,9 @@ io.on('connection', function(socket){
     //     }
     // });
 
-
-
-
     // Someone sends a message
     socket.on('chat message', function(msg){
+        msg = sanitizer.escape(msg);
         var message = new Chat({ name: 'Zildjian', message: msg });
         // Save Message to MongoDB
         message.save(function (err) {
@@ -166,10 +169,16 @@ io.on('connection', function(socket){
     });
 
 
+
+
+
+
+
+
     // Broadcast your mouse position!
     socket.on('mouse_position', function(pos){
         pos.id = socket.id;
-        socket.broadcast.emit('show_mouse', pos)
+        socket.broadcast.emit('show_mouse', pos);
     });
     // Remove your mouse icon when you disconnect
     socket.on('disconnect', function( res ){

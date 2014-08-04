@@ -1,10 +1,7 @@
 $(function(){
 /*
 *
-*
-*
 *	Chat room logic
-*
 *
 **/
 	var socket = io();
@@ -13,20 +10,14 @@ $(function(){
 
 	// Connected
 	socket.on('connected', function (data) {
-		for( i in data ){
-			$('#messages').append( 
-				message_tempate.replace('{{name}}', data[i].name ).replace('{{message}}', data[i].message) 
-			);
+		if( $('#messages').length > 0 ){
+			for( i in data ){
+				$('#messages').append( 
+					message_tempate.replace('{{name}}', data[i].name ).replace('{{message}}', data[i].message) 
+				);
+			}
+			$('#message-board').scrollTop( $('#messages').height() + 100 );
 		}
-		$('#message-board').scrollTop( $('#messages').height() + 100 );
-
-
-		// check for cookie on connection
-		// If has cookie with user name then don't show modal
-		$('#select-nickname').click(function(){
-			$('#chatModal').modal('hide')
-		});
-		$('#chatModal').modal()
 	});
 	// Send Message
 	$('#send-message').click(function(){
@@ -44,6 +35,14 @@ $(function(){
 			);
 		$('#message-board').scrollTop( $('#messages').height() + 100 )
 	});
+	// check for cookie on connection
+	// If has cookie with user name then don't show modal
+
+	// console.log($.cookie('user_session_id'));
+	$('#select-nickname').click(function(){
+		$('#chatModal').modal('hide')
+	});
+	// $('#chatModal').modal()
 
 
 /*
@@ -86,3 +85,4 @@ $(function(){
 
 
 });
+// console.log($.cookie());
