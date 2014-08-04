@@ -66,11 +66,12 @@ db.once('open', function callback () {
     console.log('Connected to MongoDB!!!');
 });
 
+
 // MongoDB Session Store
 app.use(session({
     secret: 'secret-cookie-string',
     name: 'user_session_id',
-    cookie: { path: '/', httpOnly: false, secure: false, maxAge: 1209600 },
+    cookie: { path: '/', httpOnly: true, secure: false, maxAge: 1209600 },
     store: new MongoStore({
         db: 'socketio',
         collection: 'sessions',
@@ -83,6 +84,14 @@ app.use(session({
     })
 }));
 
+// GET Session ID
+app.get('/session',function(req, res, next) {
+    var session = req.session;
+    res.setHeader('Content-Type', 'text/html')
+    res.send( req.session.id );
+    res.end();
+})
+
 // DEFINE collections
 var Chat = mongoose.model( 'Message', {
     name: String,
@@ -92,6 +101,7 @@ var Chat = mongoose.model( 'Message', {
 var User = mongoose.model( 'User', {
     nickname: String,
     socket_id: String,
+    session_id: String,
     message_count: Number
 });
 var Session = mongoose.model( 'Session', {
@@ -106,6 +116,7 @@ app.get('/',            function(req, res){ res.render('index'); });
 app.get('/chat',        function(req, res){ res.render('chat', { title: 'Chat' }); });
 app.get('/rproxy',      function(req, res){ res.render('proxy-nginx'); });
 app.get('/template',    function(req, res){ res.render('template'); });
+
 
 // API
 app.get('/api/:id?', function(req, res, next) {
@@ -142,6 +153,33 @@ io.on('connection', function(socket){
     Chat.find({ },function (err, messages) {
         if (err) return console.error(err);
         socket.emit('connected', messages);
+    });
+
+
+    socket.on( 'check user', function(session_id){
+        User.find( { session_id: session_id }, function(err,user){
+            if( user.length == 0 ){
+                var temp_username = 'guest' + Math.floor(Math.random() * 10000);
+                var user = new User({
+                    nickname: temp_username,
+                    socket_id: socket.id,
+                    session_id: session_id
+                });
+                user.save(function (err){
+                    if( !err ){
+                        socket.emit('get nickname', { nickname: temp_username, newuser: true, socket_id: socket.id, session_id: session_id })
+                    } else {
+                        // nothing
+                    }
+                });
+            } else {
+                socket.emit('get nickname', { nickname: user[0].nickname, newuser: false, socket_id: socket.id, session_id: session_id })
+                // user already exists
+            }
+        });
+    });
+    socket.on( 'set username', function(obj){
+        
     });
 
     // var session = new User({ name: '-', ip: 'ip'  });
@@ -183,6 +221,7 @@ io.on('connection', function(socket){
     // Remove your mouse icon when you disconnect
     socket.on('disconnect', function( res ){
         socket.broadcast.emit('remove_cursor', socket.id );
+        socket.emit('remove user', socket.id );
     });
 
 

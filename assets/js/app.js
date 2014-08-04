@@ -30,19 +30,47 @@ $(function(){
 	});
 	// Receive Message
 	socket.on('chat message', function(msg){
-			$('#messages').append( 
-				message_tempate.replace('{{name}}', 'Nickname' ).replace('{{message}}', msg ) 
-			);
+		$('#messages').append( 
+			message_tempate.replace('{{name}}', 'Nickname' ).replace('{{message}}', msg ) 
+		);
 		$('#message-board').scrollTop( $('#messages').height() + 100 )
 	});
+
+
+
+
 	// check for cookie on connection
 	// If has cookie with user name then don't show modal
-
-	// console.log($.cookie('user_session_id'));
-	$('#select-nickname').click(function(){
-		$('#chatModal').modal('hide')
+	$.get('/session', function(session_id){
+		if( session_id ){
+			socket.emit('check user', session_id);
+		}
 	});
-	// $('#chatModal').modal()
+	socket.on( 'get nickname', function(user){
+		if( user.newuser ){
+			$('#chatModal').modal();
+		} else {
+			$('#user-list').append( '<li class="'+user.socket_id+'">'+user.nickname+'</li>' );
+		}
+	});
+	socket.on( 'remove user', function(id){
+		$('.'+id).remove();
+		$('#messages').append( 
+			message_tempate.replace('{{name}}', 'System' ).replace('{{message}}', 'Someone left??' ) 
+		);
+	});
+	$('#chatModal').on('hidden.bs.modal', function () {
+		$('#chatModal').modal('hide');
+		if( $('#nickname').length ){
+			socket.emit( 'set username', { socket_id: socket.id, new_nickname: $('#nickname').val() });
+			$('#user-list').append( '<li class="'+socket.id+'">'+$('#nickname').val()+'</li>' );
+		} else {
+			$('#user-list').append( '<li class="'+socket.id+'">'+$('#nickname').val()+'</li>' );
+		}
+	})
+	$('#select-nickname').click(function(){
+		$('#chatModal').modal('hide');
+	});
 
 
 /*
@@ -85,4 +113,3 @@ $(function(){
 
 
 });
-// console.log($.cookie());
