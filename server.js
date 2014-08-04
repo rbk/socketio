@@ -116,6 +116,7 @@ app.get('/',            function(req, res){ res.render('index'); });
 app.get('/chat',        function(req, res){ res.render('chat', { title: 'Chat' }); });
 app.get('/rproxy',      function(req, res){ res.render('proxy-nginx'); });
 app.get('/template',    function(req, res){ res.render('template'); });
+app.get('/boxes',    function(req, res){ res.render('boxes'); });
 
 
 // API

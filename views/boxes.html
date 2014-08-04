@@ -1,0 +1,53 @@
+<html>
+    <head>
+        <script src="//code.jquery.com/jquery-1.11.1.js"></script>
+        <script>
+            $(function(){
+
+                for( var i=0; i<1000;i++ ){
+                    $('body').append('<div class="block"></div>')
+                }
+
+                $('.block').hover(function(){
+                    if( $(this).hasClass('boxshadow') ){
+                        $(this).removeClass('boxshadow'); 
+                    } else {                        
+                        $(this).addClass('boxshadow'); 
+                    }
+                });
+                $('.block').click(function(){
+                    $(this).toggleClass('stayboxed')
+                });
+
+            });
+        </script>
+    </head>
+    <style>
+        
+        * {
+            border: 0;
+            margin: 0;
+            padding: 0;
+        }
+        .stayboxed {
+            box-shadow: inset 0px 0px 16px #444;
+        }
+        .boxshadow {
+             box-shadow: inset 0px 0px 16px #444;
+        }
+        .block {
+            height:100px;
+            width:100px;
+            float:left;
+            border-right: 1px solid #eee;
+            border-bottom: 1px solid #eee;
+            transition: all .1s ease-in-out;
+        }
+        .block:hover {
+            box-shadow: inset 0px 0px 16px #444;
+        }
+        
+    </style>
+    <body>
+    </body>
+</html>
