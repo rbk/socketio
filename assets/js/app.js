@@ -21,13 +21,12 @@ $(function(){
 		$('#message-board').scrollTop( $('#messages').height() + 100 );
 
 
+		// check for cookie on connection
+		// If has cookie with user name then don't show modal
 		$('#select-nickname').click(function(){
 			$('#chatModal').modal('hide')
 		});
-		// $('#chatModal').modal()
-	});
-	socket.on('cookie', function(cookie){
-		alert(cookie)
+		$('#chatModal').modal()
 	});
 	// Send Message
 	$('#send-message').click(function(){

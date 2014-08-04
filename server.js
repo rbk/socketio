@@ -25,13 +25,16 @@ How to import js files here?!?!?!
 // Project name: SocketIO
 var express      = require('express');
 var app          = express();
-var fs = require('fs');
 var http         = require('http').Server(app);
 var io           = require('socket.io')(http);
 var mongoose     = require('mongoose');
 var cookieParser = require('cookie-parser');
 var port         = process.env.PORT || 3001;
 var router = express.Router();
+
+// Session stuff
+var session    = require('express-session');
+var MongoStore = require('connect-mongo')(session);
 
 // Set static file folder
 app.use(express.static('assets'));
@@ -63,6 +66,21 @@ db.once('open', function callback () {
     console.log('Connected to MongoDB!!!');
 });
 
+// MongoDB Session Store
+app.use(session({
+    secret: 'secret-cookie-string',
+    store: new MongoStore({
+        db: 'socketio',
+        collection: 'sessions',
+        host: '127.0.0.1',
+        port: 27017,
+        username: '',
+        password: '',
+        ssl: false,
+        mongoose_connection: db
+    })
+}));
+
 // DEFINE collections
 var Chat = mongoose.model( 'Chat', {
     name: String,
@@ -86,14 +104,15 @@ app.get('/template',    function(req, res){ res.render('template'); });
 
 // API
 app.get('/api/:id?', function(req, res, next) {
-    // ... maybe some additional /bar logging ...
     console.log( 'you hit our api' );
     res.end(JSON.stringify( req.params.id ));
     // next();
 });
-
-
-
+/*
+*
+* Socket IO Stuff!
+*
+*/
 // Connection made to socket
 io.on('connection', function(socket){
     //:: On connect
@@ -112,23 +131,6 @@ io.on('connection', function(socket){
     // 1. check for cookie
     // 2.  if cookie send chat room
     // set a cookie
-    app.use(function (req, res, next) {
-        // check if client sent cookie
-        var cookie = req.cookies.cokkieName;
-        if (cookie === undefined) {
-            // no: set a new cookie
-            var randomNumber=Math.random().toString();
-            randomNumber=randomNumber.substring(2,randomNumber.length);
-            res.cookie('cokkieName',randomNumber, { maxAge: 900000, httpOnly: true });
-            console.log('cookie have created successfully');
-        } else {
-            // yes, cookie was already present 
-            console.log('cookie exists', cookie);
-        } 
-        socket.emit( 'cookie', cookie );
-        next(); // <-- important!
-    });
-
 
     // Get ALL messages
     // Send all messages to client as object
