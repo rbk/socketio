@@ -122,7 +122,7 @@ app.get('/boxes',    function(req, res){ res.render('boxes'); });
 // API
 app.get('/api/:id?', function(req, res, next) {
     console.log( 'you hit our api' );
-    res.end(JSON.stringify( req.params.id ));
+    res.end(JSON.stringify( {youtyped: req.params.id, message: 'you hit our api'} ));
     // next();
 });
 /*
@@ -156,39 +156,6 @@ io.on('connection', function(socket){
         socket.emit('connected', messages);
     });
 
-
-    socket.on( 'check user', function(session_id){
-        User.find( { session_id: session_id }, function(err,user){
-            if( user.length == 0 ){
-                var temp_username = 'guest' + Math.floor(Math.random() * 10000);
-                var user = new User({
-                    nickname: temp_username,
-                    socket_id: socket.id,
-                    session_id: session_id
-                });
-                user.save(function (err){
-                    if( !err ){
-                        socket.emit('get nickname', { nickname: temp_username, newuser: true, socket_id: socket.id, session_id: session_id })
-                    } else {
-                        // nothing
-                    }
-                });
-            } else {
-                socket.emit('get nickname', { nickname: user[0].nickname, newuser: false, socket_id: socket.id, session_id: session_id })
-                // user already exists
-            }
-        });
-    });
-    socket.on( 'set username', function(obj){
-        
-    });
-
-    // var session = new User({ name: '-', ip: 'ip'  });
-    // session.save(function (err) {
-    //     if( err ){
-    //         console.log( err )
-    //     }
-    // });
 
     // Someone sends a message
     socket.on('chat message', function(msg){
