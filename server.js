@@ -152,24 +152,44 @@ io.on('connection', function(socket){
     // });
 
     // Someone sends a message
-    socket.on('chat message', function(msg){
-        msg = sanitizer.escape(msg);
-        var message = new Chat({ name: 'Zildjian', message: msg });
+    socket.on('chat message', function(data){
+        var san_message = sanitizer.escape(data.message);
+        var message = new Chat({ name: data.name, message: san_message });
         // Save Message to MongoDB
         message.save(function (err) {
             // Handle errors ***
             if( err ){
                 io.emit('chat message', 'Something went wrong while saving your message');
             } else {
-                console.log( 'Message saved to MongoDB: ' + msg );
+                // console.log( 'Message saved to MongoDB: ' + msg );
                 // Send message to all sockets including yours!
-                io.emit('chat message', msg);
+                io.emit('chat message', { name: data.name, message: san_message });
             }
         });
     });
+    socket.on('nickname selected', function(nickname){
+        var user = new User({nickname: nickname, socket_id: socket.id});
+        user.save(function(err){
+            if( !err ){
+                User.find({ },function (err, users) {
+                    if( !err ){
+                        io.emit( 'update user list', users);
+                        socket.broadcast.emit('joined', nickname);
+                    }
+                });
+            }
+        });
+    });
+    socket.on('disconnect', function( res ){
+        User.remove({socket_id: socket.id}, function(err){
+            User.find({ },function (err, users) {
+                if( !err ){
+                    io.emit( 'update user list', users);
+                }
+            });
 
-
-
+        });
+    });
 
 
 
