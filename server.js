@@ -122,7 +122,7 @@ app.get('/boxes',    function(req, res){ res.render('boxes'); });
 // API
 app.get('/api/:id?', function(req, res, next) {
     console.log( 'you hit our api' );
-    res.end(JSON.stringify( {youtyped: req.params.id, message: 'you hit our api'} ));
+    res.end(JSON.stringify( req.params.id ));
     // next();
 });
 /*
@@ -156,6 +156,13 @@ io.on('connection', function(socket){
         socket.emit('connected', messages);
     });
 
+
+    // var session = new User({ name: '-', ip: 'ip'  });
+    // session.save(function (err) {
+    //     if( err ){
+    //         console.log( err )
+    //     }
+    // });
 
     // Someone sends a message
     socket.on('chat message', function(msg){
