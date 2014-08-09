@@ -7,6 +7,7 @@ $(function(){
 	var socket = io();
 	var nickname = 'richard';
 	var message_tempate = $('#message-li').html();
+	var cookie = $.cookie('rbk_chat');
 
 	socket.on('your socket id', function(id){
 		// console.log( 'Your socket id:' + id );
@@ -85,6 +86,17 @@ $(function(){
 
 	// Open modal
 	$('#chatModal').modal();
+	console.log( cookie.length )
+	if( cookie.length > 0) {
+		$('#client_nickname').val( cookie );
+		var t = setTimeout(function(){
+
+			$('#select-nickname').trigger('click');
+		},1000);
+		console.log( cookie.length )
+	} else {
+
+	}
 	// close modal on enter key
 	$('#your_nickname').bind('keydown', function(e){
 		if (e.keyCode == 13) {
@@ -97,11 +109,18 @@ $(function(){
 	});
 	// Close modal and set name
 	$('#chatModal').on('hidden.bs.modal', function () {
-		
-		$('#chatModal').modal('hide');
-		var your_nickname = $('#your_nickname');
-		if( your_nickname.val().length ){
-			your_nickname = your_nickname.val();
+		var your_nickname;
+		// $('#chatModal').modal('hide');
+		if( cookie ) {
+			// your_nickname = $.cookie('rbk_chat', your_nickname, { expires: 7 });
+			your_nickname = $.cookie('rbk_chat');
+		} else {
+			your_nickname = $('#your_nickname').val();
+			$.cookie('rbk_chat', your_nickname, { expires: 7 });
+			
+		}
+		if( your_nickname.length ){
+			your_nickname = your_nickname;
 		} else {
 			your_nickname = 'Guest' + Math.floor(Math.random()*4000);
 		}
@@ -120,8 +139,14 @@ $(function(){
 		}
 		$('#message-board').scrollTop( $('#messages').height() + 100 );
 	});
-	socket.on('joined',function(name){
-		rbk_message( 'Server', name );
+	socket.on('user joined',function(name){
+		// rbk_message( '<i>Server', name + ' joined.</i>' );
+		$('#messages').append('<li style="background-color: #F3F3F3;padding: 0px 5px;color: #707070;">'+name+'&nbsp;joined.</li>')
+	});
+	socket.on('user left',function(name){
+		console.log( name );
+		// rbk_message( '<i>Server', name + ' joined.</i>' );
+		$('#messages').append('<li style="background-color: red;padding: 0px 5px;color: #707070;">'+name+'&nbsp;left.</li>')
 	});
 /*
 *

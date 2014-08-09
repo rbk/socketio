@@ -167,13 +167,21 @@ io.on('connection', function(socket){
         user.save(function(err){
             if( !err ){
                 rbk_update_users_list();
-                socket.broadcast.emit('joined', nickname);
+                io.emit('user joined', nickname);
             }
         });
     });
     socket.on('disconnect', function( res ){
-        User.remove({socket_id: socket.id}, function(err){
-            rbk_update_users_list();
+        var user = User.find({socket_id:socket.id}, function(err,user){
+            console.log( user )
+            if( !err && user[0] ){
+                io.emit('user left', user[0].nickname);
+                User.remove({socket_id: socket.id}, function(err){
+                    rbk_update_users_list();
+                });
+            } else {
+                console.log( 'didn\'t find user' );
+            }
         });
     });
 
