@@ -132,22 +132,8 @@ app.get('/api/:id?', function(req, res, next) {
 */
 // Connection made to socket
 io.on('connection', function(socket){
-    //:: On connect
-    // 1. ask for nick name
-    // 2. create cooke with name
-    // 3. store name in database
-    // 4. add send name to client
-    // 5. add name to user list on client
 
-
-    // :: Leave chat
-    // 1. remove user from database
-    // 2. update user list on clients
-
-    //:: Return to chat
-    // 1. check for cookie
-    // 2.  if cookie send chat room
-    // set a cookie
+    socket.emit('your socket id', socket.id);
 
     // Get ALL messages
     // Send all messages to client as object
@@ -157,17 +143,10 @@ io.on('connection', function(socket){
     });
 
 
-    // var session = new User({ name: '-', ip: 'ip'  });
-    // session.save(function (err) {
-    //     if( err ){
-    //         console.log( err )
-    //     }
-    // });
-
     // Someone sends a message
     socket.on('chat message', function(data){
-        var san_message = sanitizer.escape(data.message);
-        var message = new Chat({ name: data.name, message: san_message });
+        var sanitized_message = sanitizer.escape(data.message);
+        var message = new Chat({ name: data.nickname, message: sanitized_message });
         // Save Message to MongoDB
         message.save(function (err) {
             // Handle errors ***
@@ -176,35 +155,35 @@ io.on('connection', function(socket){
             } else {
                 // console.log( 'Message saved to MongoDB: ' + msg );
                 // Send message to all sockets including yours!
-                io.emit('chat message', { name: data.name, message: san_message });
+                io.emit('chat message', { nickname: data.nickname, message: sanitized_message });
             }
         });
     });
-    socket.on('nickname selected', function(nickname){
-        var user = new User({nickname: nickname, socket_id: socket.id});
+
+
+
+    socket.on('set username', function(nickname){
+        var user = new User({nickname: sanitizer.escape(nickname), socket_id: socket.id});
         user.save(function(err){
             if( !err ){
-                User.find({ },function (err, users) {
-                    if( !err ){
-                        io.emit( 'update user list', users);
-                        socket.broadcast.emit('joined', nickname);
-                    }
-                });
+                rbk_update_users_list();
+                socket.broadcast.emit('joined', nickname);
             }
         });
     });
     socket.on('disconnect', function( res ){
         User.remove({socket_id: socket.id}, function(err){
-            User.find({ },function (err, users) {
-                if( !err ){
-                    io.emit( 'update user list', users);
-                }
-            });
-
+            rbk_update_users_list();
         });
     });
 
-
+    function rbk_update_users_list(  ){
+        User.find({ },function (err, users) {
+            if( !err ){
+                io.emit( 'update user list', users);
+            }
+        });
+    }
 
 
 
