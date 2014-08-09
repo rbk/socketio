@@ -13,6 +13,9 @@ store user list in chatroom
 remove user when they close window
 make chatrooms embeddable
 
+Richard: Tokenize generation of a chatroom
+Richard: Namespace chat
+
 PONG GAME!!!
 
 Dynamic Pages and posts
@@ -92,7 +95,7 @@ app.get('/session',function(req, res, next) {
     res.end();
 })
 
-// DEFINE collections
+// DEFINE Collections/Models
 var Chat = mongoose.model( 'Message', {
     name: String,
     message: String,
@@ -127,7 +130,7 @@ app.get('/api/:id?', function(req, res, next) {
 });
 /*
 *
-* Socket IO Stuff!
+* Socket IO
 *
 */
 // Connection made to socket

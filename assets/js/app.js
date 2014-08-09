@@ -16,7 +16,6 @@ $(function(){
 
 	// Connected
 	socket.on('connected', function (data) {
-		console.log(data )
 		if( $('#messages').length > 0 ){
 			for( var i=0; i<data.length;i++ ){
 				rbk_message( data[i].name, data[i].message );
@@ -85,17 +84,11 @@ $(function(){
 // GOOD
 
 	// Open modal
-	$('#chatModal').modal();
-	console.log( cookie.length )
-	if( cookie.length > 0) {
+	if( cookie ) {
 		$('#client_nickname').val( cookie );
-		var t = setTimeout(function(){
-
-			$('#select-nickname').trigger('click');
-		},1000);
-		console.log( cookie.length )
+		rbk_set_nickname();
 	} else {
-
+		$('#chatModal').modal();
 	}
 	// close modal on enter key
 	$('#your_nickname').bind('keydown', function(e){
@@ -109,15 +102,19 @@ $(function(){
 	});
 	// Close modal and set name
 	$('#chatModal').on('hidden.bs.modal', function () {
+		rbk_set_nickname();
+	});
+	function rbk_set_nickname() {
 		var your_nickname;
 		// $('#chatModal').modal('hide');
 		if( cookie ) {
 			// your_nickname = $.cookie('rbk_chat', your_nickname, { expires: 7 });
 			your_nickname = $.cookie('rbk_chat');
+			console.log( $.cookie('rbk_chat') )
 		} else {
+			console.log( 'no cookie found' )
 			your_nickname = $('#your_nickname').val();
 			$.cookie('rbk_chat', your_nickname, { expires: 7 });
-			
 		}
 		if( your_nickname.length ){
 			your_nickname = your_nickname;
@@ -129,7 +126,8 @@ $(function(){
 		socket.emit( 'set username', your_nickname);
 		$('#message').focus();
 
-	});
+		console.log( your_nickname )
+	}
 
 // GOOD
 	socket.on('update user list',function(users){
@@ -146,7 +144,7 @@ $(function(){
 	socket.on('user left',function(name){
 		console.log( name );
 		// rbk_message( '<i>Server', name + ' joined.</i>' );
-		$('#messages').append('<li style="background-color: red;padding: 0px 5px;color: #707070;">'+name+'&nbsp;left.</li>')
+		$('#messages').append('<li style="background-color: #FFDADA;padding: 0px 5px;color: #707070;">'+name+'&nbsp;left.</li>')
 	});
 /*
 *
