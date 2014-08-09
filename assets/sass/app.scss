@@ -9,15 +9,18 @@
 #user-list, #message-board {
 	height: 200px;
 	overflow-y: scroll;
-	// box-shadow: inset 0px 0px 6px #E2E2E2;
-	// -moz-box-shadow: inset 0px 0px 6px #E2E2E2;
-	// -webkit-box-shadow: inset 0px 0px 6px #E2E2E2;
+	box-shadow: inset 0px 0px 6px #E2E2E2;
+	-moz-box-shadow: inset 0px 0px 6px #E2E2E2;
+	-webkit-box-shadow: inset 0px 0px 6px #E2E2E2;
 }
 #message-board {
 
+}
+
+#chat_main {
 	ul {
 		margin: 0;
 		padding: 0;
 		list-style: none;
-	}
+	}	
 }

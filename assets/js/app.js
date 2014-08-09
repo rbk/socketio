@@ -1,4 +1,9 @@
 $(function(){
+
+
+
+	console.log( navigator.userAgent )
+	console.log( navigator )
 /*
 *
 *	Chat room logic
@@ -67,18 +72,15 @@ $(function(){
 		);
 	});
 
-
-	$('#chatModal').on('hidden.bs.modal', function () {
-		$('#chatModal').modal('hide');
-		if( $('#nickname').length ){
-			socket.emit( 'set username', { socket_id: socket.id, new_nickname: $('#nickname').val() });
-			$('#user-list').append( '<li class="'+socket.id+'">'+$('#nickname').val()+'</li>' );
-		} else {
-			$('#user-list').append( '<li class="'+socket.id+'">'+$('#nickname').val()+'</li>' );
+	// Open modal
+	$('#chatModal').modal();
+	// close modal on enter key
+	$('#your_nickname').bind('keydown', function(e){
+		if (e.keyCode == 13) {
+			$('#select-nickname').trigger('click');
 		}
 	});
-
-
+	// Wait for theme to select a name
 	$('#select-nickname').click(function(){
 		var your_nickname = $('#your_nickname').val();
 		$('#chatModal').modal('hide');
@@ -86,7 +88,21 @@ $(function(){
 		$('#client_nickname').val( your_nickname );
 		$('#message').focus();
 	});
-	$('#chatModal').modal();
+	// Close modal and set name
+	$('#chatModal').on('hidden.bs.modal', function () {
+		console.log( 'MODAL CLOsED' );
+		$('#chatModal').modal('hide');
+		if( $('#nickname').length ){
+			socket.emit( 'set username', { socket_id: socket.id, new_nickname: $('#nickname').val() });
+			$('#user-list').append( '<li class="'+socket.id+'">'+$('#nickname').val()+'</li>' );
+		} else {
+			var guest_name = 'Guest' + Math.floor(Math.random()*4000);
+			$('#user-list').append( '<li class="'+socket.id+'">'+ guest_name +'</li>' );
+			socket.emit( 'set username', { socket_id: socket.id, new_nickname: guest_name });
+		}
+	});
+
+
 	
 	socket.on('update user list',function(users){
 		console.log(users);
