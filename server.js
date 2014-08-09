@@ -121,9 +121,18 @@ var Key = mongoose.model( 'Key', {
 // Static routes
 app.get('/',            function(req, res){ res.render('index'); });
 app.get('/chat',        function(req, res){ res.render('chat', { title: 'Chat' }); });
+
+app.get( '/admin', function(req,res){
+    res.send( res.render( 'admin' ));
+    res.end();
+});
+app.get( '/admin/login', function(req,res){
+    res.send( res.render( 'login' ));
+    res.end();
+});
 // app.get('/rproxy',      function(req, res){ res.render('proxy-nginx'); });
 // app.get('/template',    function(req, res){ res.render('template'); });
-app.get('/boxes',    function(req, res){ res.render('boxes'); });
+// app.get('/boxes',    function(req, res){ res.render('boxes'); });
 
 // JSON.stringify( req.params )
 app.get('/private/api_key/:id?', function( req, res ){
