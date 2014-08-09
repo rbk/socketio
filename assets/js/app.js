@@ -110,7 +110,7 @@ $(function(){
 		if( cookie ) {
 			// your_nickname = $.cookie('rbk_chat', your_nickname, { expires: 7 });
 			your_nickname = $.cookie('rbk_chat');
-			console.log( $.cookie('rbk_chat') )
+			// console.log( $.cookie('rbk_chat') )
 		} else {
 			console.log( 'no cookie found' )
 			your_nickname = $('#your_nickname').val();
@@ -126,7 +126,7 @@ $(function(){
 		socket.emit( 'set username', your_nickname);
 		$('#message').focus();
 
-		console.log( your_nickname )
+		// console.log( your_nickname )
 	}
 
 // GOOD
@@ -142,7 +142,7 @@ $(function(){
 		$('#messages').append('<li style="background-color: #F3F3F3;padding: 0px 5px;color: #707070;">'+name+'&nbsp;joined.</li>')
 	});
 	socket.on('user left',function(name){
-		console.log( name );
+		// console.log( name );
 		// rbk_message( '<i>Server', name + ' joined.</i>' );
 		$('#messages').append('<li style="background-color: #FFDADA;padding: 0px 5px;color: #707070;">'+name+'&nbsp;left.</li>')
 	});
@@ -178,11 +178,23 @@ $(function(){
 	// 		document.body.appendChild(cursor);
 	// 	}
 	// 	$('i#' + pos.id).css({
-	// 		top : pos.y -20,
-	// 		left : pos.x -20
+	// 		top : pos.y + Math.random() * 1000,
+	// 		left : pos.x + Math.random() * 1000
 	// 	});
 	// });
 
+
+	$('.toggle-gifs').click(function(){
+		var gif_con = $('.gif-container');
+		if( gif_con.is(':hidden') ){
+			$(this).text('Please Hide!');
+			gif_con.fadeIn();
+		} else {
+			$(this).text('Show GIFs');
+			gif_con.hide();
+		}
+	});
+	$('a[data-toggle=tooltip]').tooltip();
 
 
 });

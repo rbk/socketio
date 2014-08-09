@@ -90,7 +90,7 @@ app.use(session({
 // GET Session ID
 app.get('/session',function(req, res, next) {
     var session = req.session;
-    res.setHeader('Content-Type', 'text/html')
+    res.setHeader('Content-Type', 'text/html');
     res.send( req.session.id );
     res.end();
 })
@@ -113,19 +113,38 @@ var Session = mongoose.model( 'Session', {
     ip: String,
     duration: Number
 });
+var Key = mongoose.model( 'Key', {
+    belongs_to: String,
+    key: String
+});
 
 // Static routes
 app.get('/',            function(req, res){ res.render('index'); });
 app.get('/chat',        function(req, res){ res.render('chat', { title: 'Chat' }); });
-app.get('/rproxy',      function(req, res){ res.render('proxy-nginx'); });
-app.get('/template',    function(req, res){ res.render('template'); });
+// app.get('/rproxy',      function(req, res){ res.render('proxy-nginx'); });
+// app.get('/template',    function(req, res){ res.render('template'); });
 app.get('/boxes',    function(req, res){ res.render('boxes'); });
+
+// JSON.stringify( req.params )
+app.get('/private/api_key/:id?', function( req, res ){
+    var api_key = req.params;
+
+    // if( !api_key ){
+    //     res.send('Access Denied');
+    // } else {
+    //     res.send( api_key );
+    // }
+    // res.send('blah')
+    // console.log( req )
+    res.send(req._remoteAddress);
+    res.end();
+});
 
 
 // API
 app.get('/api/:id?', function(req, res, next) {
     console.log( 'you hit our api' );
-    res.end(JSON.stringify( req.params.id ));
+    res.send(JSON.stringify( req.params.id ));
     // next();
 });
 /*
@@ -176,7 +195,7 @@ io.on('connection', function(socket){
     });
     socket.on('disconnect', function( res ){
         var user = User.find({socket_id:socket.id}, function(err,user){
-            console.log( user )
+            // console.log( user )
             if( !err && user[0] ){
                 io.emit('user left', user[0].nickname);
                 User.remove({socket_id: socket.id}, function(err){
@@ -201,12 +220,12 @@ io.on('connection', function(socket){
     // Broadcast your mouse position!
     socket.on('mouse_position', function(pos){
         pos.id = socket.id;
-        socket.broadcast.emit('show_mouse', pos);
+        io.emit('show_mouse', pos);
     });
     // Remove your mouse icon when you disconnect
     socket.on('disconnect', function( res ){
         socket.broadcast.emit('remove_cursor', socket.id );
-        socket.emit('remove user', socket.id );
+        // socket.emit('remove user', socket.id );
     });
 
 

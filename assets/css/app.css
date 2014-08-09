@@ -1,5 +1,4 @@
 .cursor {
-  font-size: 64px;
   color: #000;
   position: fixed;
   z-index: 999999; }
@@ -11,7 +10,24 @@
   -moz-box-shadow: inset 0px 0px 6px #E2E2E2;
   -webkit-box-shadow: inset 0px 0px 6px #E2E2E2; }
 
-#chat_main ul {
-  margin: 0;
-  padding: 0;
-  list-style: none; }
+#chat_main {
+  padding-bottom: 15em; }
+  #chat_main ul {
+    margin: 0;
+    padding: 0;
+    list-style: none; }
+
+.alignright {
+  float: right; }
+
+.floatright {
+  float: right;
+  margin-left: 1em; }
+
+footer a {
+  font-size: 50px;
+  color: #444; }
+
+.social-wrap {
+  width: 44px;
+  margin: 0 auto; }
