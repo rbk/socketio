@@ -88,12 +88,12 @@ app.use(session({
 }));
 
 // GET Session ID
-app.get('/session',function(req, res, next) {
-    var session = req.session;
-    res.setHeader('Content-Type', 'text/html');
-    res.send( req.session.id );
-    res.end();
-})
+// app.get('/session',function(req, res, next) {
+//     var session = req.session;
+//     res.setHeader('Content-Type', 'text/html');
+//     res.send( req.session.id );
+//     res.end();
+// })
 
 // DEFINE Collections/Models
 var Chat = mongoose.model( 'Message', {
@@ -126,10 +126,21 @@ app.get( '/admin', function(req,res){
     res.send( res.render( 'admin' ));
     res.end();
 });
-app.get( '/admin/login', function(req,res){
-    res.send( res.render( 'login' ));
+app.get( '/login', function(req,res){
+    console.log( req.params )
+    if( !req.params ) {
+        res.redirect('chat');
+    } else {
+        res.send( res.render( 'login' ));
+    }
     res.end();
 });
+// app.get( '/session', function(req,res){
+//     if( !req. )
+//     // res.redirect('chat')
+//     res.send( res.render( 'login' ));
+//     res.end();
+// });
 // app.get('/rproxy',      function(req, res){ res.render('proxy-nginx'); });
 // app.get('/template',    function(req, res){ res.render('template'); });
 // app.get('/boxes',    function(req, res){ res.render('boxes'); });
