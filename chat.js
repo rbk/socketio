@@ -6,6 +6,8 @@
 // Connection made to socket
 io.on('connection', function(socket){
 
+    socket.join('channel1');
+
     socket.emit('your socket id', socket.id);
 
     // Get ALL messages
@@ -32,8 +34,6 @@ io.on('connection', function(socket){
             }
         });
     });
-
-
 
     socket.on('set username', function(nickname){
         var user = new ChatUser({nickname: sanitizer.escape(nickname), socket_id: socket.id});
@@ -65,9 +65,6 @@ io.on('connection', function(socket){
             }
         });
     }
-
-
-
     // Broadcast your mouse position!
     socket.on('mouse_position', function(pos){
         pos.id = socket.id;

@@ -140,6 +140,10 @@ var Key = mongoose.model( 'Key', {
 app.get('/',            function(req, res){ res.render('index'); });
 app.get('/chat',        function(req, res){ res.render('chat', { title: 'Chat' }); });
 
+app.get('/test/:id?', function(req,res){
+    res.render('chat', { title:'blah', channel: 'channel1' });
+});
+
 app.get( '/admin', function(req,res){
     res.render( 'admin' );
     res.end();
