@@ -35,6 +35,20 @@ var cookieParser = require('cookie-parser');
 var port         = process.env.PORT || 3001;
 var router = express.Router();
 var sanitizer = require('sanitizer');
+var bodyParser = require('body-parser');
+var md5 = require('MD5');
+var fs = require('fs');
+
+// Require files
+include( 'chat.js' )
+
+function include( filename ){
+    eval(fs.readFileSync(filename)+'');
+}
+
+app.use( bodyParser.json() );       // to support JSON-encoded bodies
+app.use( bodyParser.urlencoded() ); // to support URL-encoded bodies
+
 
 // Session stuff
 var session    = require('express-session');
@@ -101,11 +115,15 @@ var Chat = mongoose.model( 'Message', {
     message: String,
     time: Date
 });
-var User = mongoose.model( 'User', {
+var ChatUser = mongoose.model( 'ChatUser', {
     nickname: String,
     socket_id: String,
     session_id: String,
     message_count: Number
+});
+var User = mongoose.model( 'User', {
+    username: String,
+    hashed_password: String
 });
 var Session = mongoose.model( 'Session', {
     type: String,
@@ -123,39 +141,62 @@ app.get('/',            function(req, res){ res.render('index'); });
 app.get('/chat',        function(req, res){ res.render('chat', { title: 'Chat' }); });
 
 app.get( '/admin', function(req,res){
-    res.send( res.render( 'admin' ));
+    res.render( 'admin' );
     res.end();
 });
+
+// app.get('/create-user', function(req,res){
+
+//     var user = new User({ username: 'richard', hashed_password: md5('password') });
+//     user.save(function (err) {
+//         if( !err ){
+//             res.send(user);
+//         } else {
+//             res.send(err);
+//         }
+//     });
+// });
+
 app.get( '/login', function(req,res){
-    console.log( req.params )
+    // console.log( req.params )
     if( !req.params ) {
         res.redirect('chat');
     } else {
-        res.send( res.render( 'login' ));
+        res.render( 'login' );
+        res.end();
     }
-    res.end();
 });
-// app.get( '/session', function(req,res){
-//     if( !req. )
-//     // res.redirect('chat')
-//     res.send( res.render( 'login' ));
-//     res.end();
-// });
-// app.get('/rproxy',      function(req, res){ res.render('proxy-nginx'); });
-// app.get('/template',    function(req, res){ res.render('template'); });
-// app.get('/boxes',    function(req, res){ res.render('boxes'); });
+
+app.post('/sessions', function(req,res){
+    var username = req.body.username.toLowerCase();
+    var password = md5(req.body.password);
+    
+    // Chat.find({ },function (err, messages) {
+    User.find({ username: username, hashed_password: password },function(err,user){
+        if( !err ){
+            if( user.length > 0 ){
+                console.log('user FOUND')
+                res.send('you have done it');
+            } else {
+                console.log('NO USERS')
+                res.redirect('login?error=1'); 
+                // res.render( 'login',{ message: 'Invalid credentials' });
+            }
+        } else {
+            console.log( err )
+        }
+    });
+});
+app.get('/sessions', function(req,res){
+    // res.redirect('/');
+    Session.find({}, function(err,sessions){
+        res.json( sessions );
+    });
+});
 
 // JSON.stringify( req.params )
 app.get('/private/api_key/:id?', function( req, res ){
     var api_key = req.params;
-
-    // if( !api_key ){
-    //     res.send('Access Denied');
-    // } else {
-    //     res.send( api_key );
-    // }
-    // res.send('blah')
-    // console.log( req )
     res.send(req._remoteAddress);
     res.end();
 });
@@ -167,89 +208,7 @@ app.get('/api/:id?', function(req, res, next) {
     res.send(JSON.stringify( req.params.id ));
     // next();
 });
-/*
-*
-* Socket IO
-*
-*/
-// Connection made to socket
-io.on('connection', function(socket){
 
-    socket.emit('your socket id', socket.id);
-
-    // Get ALL messages
-    // Send all messages to client as object
-    Chat.find({ },function (err, messages) {
-        if (err) return console.error(err);
-        socket.emit('connected', messages);
-    });
-
-
-    // Someone sends a message
-    socket.on('chat message', function(data){
-        var sanitized_message = sanitizer.escape(data.message);
-        var message = new Chat({ name: data.nickname, message: sanitized_message });
-        // Save Message to MongoDB
-        message.save(function (err) {
-            // Handle errors ***
-            if( err ){
-                io.emit('chat message', 'Something went wrong while saving your message');
-            } else {
-                // console.log( 'Message saved to MongoDB: ' + msg );
-                // Send message to all sockets including yours!
-                io.emit('chat message', { nickname: data.nickname, message: sanitized_message });
-            }
-        });
-    });
-
-
-
-    socket.on('set username', function(nickname){
-        var user = new User({nickname: sanitizer.escape(nickname), socket_id: socket.id});
-        user.save(function(err){
-            if( !err ){
-                rbk_update_users_list();
-                io.emit('user joined', nickname);
-            }
-        });
-    });
-    socket.on('disconnect', function( res ){
-        var user = User.find({socket_id:socket.id}, function(err,user){
-            // console.log( user )
-            if( !err && user[0] ){
-                io.emit('user left', user[0].nickname);
-                User.remove({socket_id: socket.id}, function(err){
-                    rbk_update_users_list();
-                });
-            } else {
-                console.log( 'didn\'t find user' );
-            }
-        });
-    });
-
-    function rbk_update_users_list(  ){
-        User.find({ },function (err, users) {
-            if( !err ){
-                io.emit( 'update user list', users);
-            }
-        });
-    }
-
-
-
-    // Broadcast your mouse position!
-    socket.on('mouse_position', function(pos){
-        pos.id = socket.id;
-        io.emit('show_mouse', pos);
-    });
-    // Remove your mouse icon when you disconnect
-    socket.on('disconnect', function( res ){
-        socket.broadcast.emit('remove_cursor', socket.id );
-        // socket.emit('remove user', socket.id );
-    });
-
-
-}); // end io connect
 
 
 // Start server

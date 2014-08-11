@@ -42,10 +42,17 @@
 
 <div class="container">
 
-      <form class="form-signin">
+
+      <form class="form-signin" method="POST" action="/sessions">
+        <% if( true ) { %>
+        <div class="alert alert-warning">You fucked up big time bro</div>
+        <% } %>
         <input type="text" name="username" class="form-control" placeholder="Email address">
         <input type="password" name="password" class="form-control" placeholder="Password">
         <label class="checkbox">
+          <span class="icons">
+            <span class="first-icon fui-checkbox-unchecked"></span><span class="second-icon fui-checkbox-checked"></span>
+          </span>
           <input type="checkbox" value="remember-me"> Remember me
         </label>
         <button class="btn btn-large btn-primary" type="submit">Sign in</button>
