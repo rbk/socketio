@@ -23,27 +23,32 @@ Dynamic Pages and posts
 How to import js files here?!?!?!
 
 ****/
-
-
 // Project name: SocketIO
+
+
+// Base Server
 var express      = require('express');
 var app          = express();
 var http         = require('http').Server(app);
 var io           = require('socket.io')(http);
-var mongoose     = require('mongoose');
-var cookieParser = require('cookie-parser');
 var port         = process.env.PORT || 3001;
-var router = express.Router();
-var sanitizer = require('sanitizer');
-var bodyParser = require('body-parser');
-var md5 = require('MD5');
-var fs = require('fs');
+
+// Database of choice
+var mongoose     = require('mongoose');
+
+// Extras
+var cookieParser = require('cookie-parser');
+var router       = express.Router();
+var sanitizer    = require('sanitizer');
+var bodyParser   = require('body-parser');
+var md5          = require('MD5');
+var fs           = require('fs');
 
 // Require files
 include( 'chat.js' )
 
 function include( filename ){
-    eval(fs.readFileSync(filename)+'');
+    eval(fs.readFileSync(filename));
 }
 
 app.use( bodyParser.json() );       // to support JSON-encoded bodies
