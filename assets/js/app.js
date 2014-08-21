@@ -131,6 +131,7 @@ $(function(){
 
 // GOOD
 	socket.on('update user list',function(users){
+		console.log( users )
 		$('#user-list li').remove();
 		for( var i=0;i<users.length;i++ ){
 			$('#user-list').append('<li>'+users[i].nickname+'</li>');
