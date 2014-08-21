@@ -6,7 +6,7 @@
 // Connection made to socket
 io.on('connection', function(socket){
 
-    socket.join('channel1');
+    // socket.join('channel1');
 
     socket.emit('your socket id', socket.id);
 

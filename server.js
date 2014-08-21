@@ -107,12 +107,12 @@ app.use(session({
 }));
 
 // GET Session ID
-// app.get('/session',function(req, res, next) {
-//     var session = req.session;
-//     res.setHeader('Content-Type', 'text/html');
-//     res.send( req.session.id );
-//     res.end();
-// })
+app.get('/session',function(req, res, next) {
+    var session = req.session;
+    res.setHeader('Content-Type', 'text/html');
+    res.send( req.session.id );
+    res.end();
+})
 
 // DEFINE Collections/Models
 var Chat = mongoose.model( 'Message', {
